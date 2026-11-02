@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>يومياتي</title><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#0f6e6e"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="يومياتي"><link rel="apple-touch-icon" href="icon-180.png">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f4f1;--card:#fff;--ink:#1b2a2f;--mut:#6b7c80;--ac:#0f6e6e;--ac2:#e0a526;--ln:#dbe3e0;--ok:#2f8f5b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11191b;--card:#1a2528;--ink:#e6eeee;--mut:#8ea0a3;--ac:#3fb5b0;--ac2:#e8b84a;--ln:#2b3a3e;--ok:#4ac07f}}
+:root[data-theme="dark"]{--bg:#11191b;--card:#1a2528;--ink:#e6eeee;--mut:#8ea0a3;--ac:#3fb5b0;--ac2:#e8b84a;--ln:#2b3a3e;--ok:#4ac07f}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Tajawal,system-ui,sans-serif}
+#app{max-width:640px;margin:0 auto;padding:14px 14px 60px}
+h1,h2{font-family:'Aref Ruqaa',Tajawal,serif;margin:0}
+h1{font-size:2.4rem;color:var(--ac)}h2{font-size:1.5rem}
+button{font:inherit;color:inherit;cursor:pointer;border:1px solid var(--ln);background:var(--card);border-radius:10px;padding:6px 12px}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+.pri{background:var(--ac);color:#fff;border-color:var(--ac)}.sm{padding:2px 9px}
+input,textarea,select{font:inherit;color:inherit;background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:8px 10px;width:100%}
+textarea{min-height:84px;resize:vertical}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:12px}.top h2{flex:1}
+.big{display:block;width:100%;text-align:right;padding:22px 18px;margin-top:12px;border-radius:16px;font-size:1.2rem;font-weight:700}
+.big small{display:block;font-weight:400;color:var(--mut);font-size:.9rem}
+.big.a{background:var(--ac);color:#fff;border-color:var(--ac)}.big.a small{color:#d3eeee}
+.mut{color:var(--mut);font-size:.9rem}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:8px}
+.cal b{text-align:center;color:var(--mut);font-weight:500;font-size:.85rem}
+.cd{aspect-ratio:1;padding:0;position:relative;font-weight:500}
+.cd.td{border:2px solid var(--ac);color:var(--ac)}
+.cd.hs::after{content:"";position:absolute;bottom:5px;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:var(--ac2)}
+.tabs{display:flex;gap:6px;margin:10px 0}.tabs button{flex:1}.tabs .on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.box{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:12px;margin-bottom:12px}
+.box h3{margin:0 0 8px;font-size:1.05rem}
+.bar{height:9px;background:var(--ln);border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac2);transition:width .3s}
+.row{display:flex;gap:8px;align-items:center;margin:6px 0}.row>*{min-width:0}
+.ph img{width:100%;border-radius:12px;display:block;margin-bottom:6px}
+.task{margin:4px 0}.task .task{margin-right:16px}
+.tr{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--ln);padding:4px 0}
+.tr input[type=checkbox]{width:22px;height:22px;flex:none;accent-color:var(--ac)}.tr>span:first-of-type{flex:1}
+.dn{text-decoration:line-through;color:var(--mut)}.tn{font-size:.85rem;color:var(--ac);margin-top:4px}
+.per{font-weight:700;color:var(--ac);margin:12px 0 2px}
+.cnt{display:flex;align-items:center;gap:12px;font-size:1.3rem}
+.pc{width:70px!important;flex:none}
+.res{margin-top:10px}.res .box{cursor:pointer}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const $=s=>document.querySelector(s),uid=()=>Math.random().toString(36).slice(2,8);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const MN=['كانون الثاني','شباط','آذار','نيسان','أيار','حزيران','تموز','آب','أيلول','تشرين الأول','تشرين الثاني','كانون الأول'];
+const DN=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+const PER=[['m','🌅 الصباح'],['z','☀️ الظهر'],['a','🌤️ العصر'],['g','🌇 المغرب'],['n','🌙 الليل']];
+const key=(y,m,d)=>y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+const now=new Date(),today=key(now.getFullYear(),now.getMonth(),now.getDate());
+let db=null;try{db=JSON.parse(localStorage.getItem('yw'))}catch(e){}
+db=db||{days:{},daily:[],secs:[{id:'story',t:'✍️ كيف مر يومي؟'},{id:'ideas',t:'💡 الأفكار'},{id:'wish',t:'⭐ الأمنيات'},{id:'proj',t:'🚀 المشاريع'},{id:'need',t:'🛒 الاحتياجات'}],areas:[{id:'a1',t:'الدراسة'},{id:'a2',t:'الرياضة'}]};
+const save=()=>{try{localStorage.setItem('yw',JSON.stringify(db))}catch(e){alert('المساحة ممتلئة، احذف بعض الصور')}};
+const D=k=>db.days[k]||(db.days[k]={tx:{},ph:[],tasks:[],chk:{},h:{meals:0,nut:false,tr:false,trn:'',learn:'',ar:{}}});
+const has=k=>{const d=db.days[k];return !!d&&(Object.values(d.tx).some(x=>x)||d.ph.length||d.tasks.length||Object.keys(d.chk).length||d.h.learn||d.h.trn||d.h.meals||d.h.tr||d.h.nut||d.h.mood)};
+let v={p:'home',date:today,tab:'mem',y:now.getFullYear(),m:now.getMonth(),edit:false,sub:null,cf:null,q:''};
+const tasksOf=k=>[...db.daily.filter(t=>t.from<=k),...D(k).tasks].sort((a,b)=>(a.time||'99').localeCompare(b.time||'99'));
+const val=(t,d)=>t.subs&&t.subs.length?t.subs.reduce((s,x)=>s+val(x,d),0)/t.subs.length:(d.chk[t.id]?1:0);
+const prog=k=>{const L=tasksOf(k);return L.length?Math.round(L.reduce((s,t)=>s+val(t,D(k)),0)/L.length*100):null};
+function loc(id,list){for(let i=0;i<list.length;i++){if(list[i].id==id)return[list,i];const r=loc(id,list[i].subs||[]);if(r)return r}return null}
+function findT(id,k){return loc(id,db.daily)||loc(id,D(k).tasks)}
+function setAll(t,d,on){if(on)d.chk[t.id]=1;else delete d.chk[t.id];(t.subs||[]).forEach(s=>setAll(s,d,on))}
+const dateName=k=>{const [y,m,d]=k.split('-').map(Number);return DN[new Date(y,m-1,d).getDay()]+' '+d+' '+MN[m-1]+' '+y};
+
+function homeH(){return `<div style="margin-top:20px"><h1>يومياتي</h1><div class="mut">${dateName(today)}</div></div>
+<button class="big a" data-a="nav" data-p="cal">📅 التقويم<small>افتح أي يوم واكتب أو اقرأ ما فيه</small></button>
+<button class="big" data-a="nav" data-p="logs">🗂️ السجل والبحث<small>كل ما كتبته مرتباً بالتاريخ</small></button>
+<button class="big" data-a="open" data-d="${today}">✅ يومي الآن<small>${prog(today)==null?'لا مهام بعد':'إنجاز اليوم '+prog(today)+'%'}</small></button>`}
+function calH(){const{y,m}=v,off=(new Date(y,m,1).getDay()+1)%7,n=new Date(y,m+1,0).getDate();
+let c=['س','ح','ن','ث','ر','خ','ج'].map(x=>`<b>${x}</b>`).join('');for(let i=0;i<off;i++)c+='<i></i>';
+for(let i=1;i<=n;i++){const k=key(y,m,i);c+=`<button class="cd ${k==today?'td':''} ${has(k)?'hs':''}" data-a="open" data-d="${k}">${i}</button>`}
+return `<div class="top"><button data-a="back">رجوع</button><h2>${MN[m]} ${y}</h2></div>
+<div class="row"><button data-a="pm">الشهر السابق</button><button data-a="nm">التالي</button><button data-a="open" data-d="${today}" class="pri">اليوم</button></div><div class="cal">${c}</div>`}
+function logsH(){return `<div class="top"><button data-a="back">رجوع</button><h2>السجل والبحث</h2></div><input id="q" data-f="q" placeholder="ابحث عن فكرة أو كلمة..." value="${esc(v.q)}"><div class="res" id="res">${resH()}</div>`}
+function resH(){const q=v.q.trim();const ks=Object.keys(db.days).filter(has).sort().reverse().filter(k=>!q||JSON.stringify(db.days[k]).includes(q));
+if(!ks.length)return '<p class="mut">لا نتائج. اكتب في أي يوم وسيظهر هنا.</p>';
+return ks.map(k=>{const d=db.days[k],t=db.secs.map(s=>d.tx[s.id]?`<div><b>${esc(s.t)}</b> ${esc(d.tx[s.id].slice(0,140))}</div>`:'').join('');const p=prog(k);
+return `<div class="box" data-a="open" data-d="${k}"><b>${dateName(k)}</b>${p!=null?` <span class="mut">إنجاز ${p}%</span>`:''}${d.ph.length?` <span class="mut">📷${d.ph.length}</span>`:''}${t}${d.h.learn?`<div>🎓 ${esc(d.h.learn.slice(0,100))}</div>`:''}</div>`}).join('')}
+
+function dayH(){const k=v.date,p=prog(k);
+const tb=[['mem','🖼️ الذكريات'],['tasks','✅ المهام'],['hl','💪 الصحة']].map(([i,t])=>`<button class="${v.tab==i?'on':''}" data-a="tab" data-t="${i}">${t}</button>`).join('');
+return `<div class="top"><button data-a="back">رجوع</button><h2>${dateName(k)}</h2><button data-a="edit" class="${v.edit?'pri':''}">✏️</button></div>
+${p!=null?`<div class="bar"><i style="width:${p}%"></i></div><div class="mut">إنجاز المهام ${p}%</div>`:''}<div class="tabs">${tb}</div>${v.tab=='mem'?memH(k):v.tab=='tasks'?tasksH(k):healthH(k)}`}
+function memH(k){const d=D(k);
+let s=`<div class="box ph"><h3>🖼️ ذكريات مصورة</h3>${d.ph.map((x,i)=>`<div><img src="${x.src}" alt=""><textarea data-f="phd:${i}" placeholder="وصف الذكرى...">${esc(x.d)}</textarea><button class="sm" data-a="delph" data-i="${i}">حذف الصورة</button></div>`).join('')}<label class="row"><input type="file" accept="image/*" id="fi" style="display:none"><button class="pri" onclick="$('#fi').click()">＋ أضف صورة</button></label></div>`;
+s+=db.secs.map(c=>`<div class="box">${v.edit?`<div class="row"><input data-f="sec:${c.id}" value="${esc(c.t)}"><button class="sm" data-a="delsec" data-id="${c.id}">${v.cf==c.id?'تأكيد؟':'حذف'}</button></div>`:`<h3>${esc(c.t)}</h3>`}<textarea data-f="tx:${c.id}">${esc(d.tx[c.id]||'')}</textarea></div>`).join('');
+if(v.edit)s+=`<div class="box"><h3>قسم جديد</h3><div class="row"><input id="ns" placeholder="اسم القسم"><button class="pri" data-a="addsec">إضافة</button></div></div>`;return s}
+function taskH(t,d,l){const hs=t.subs&&t.subs.length,pv=val(t,d),c=hs?pv==1:d.chk[t.id];return `<div class="task l${l}">${t.note&&l==0?`<div class="tn">📝 ${esc(t.note)}</div>`:''}<div class="tr"><input type="checkbox" data-a="chk" data-id="${t.id}" ${c?'checked':''} aria-label="إنجاز"><span class="${c?'dn':''}">${esc(t.title)}${t.time?` <small class="mut">⏰ ${t.time}</small>`:''}${l==0&&t.rep=='daily'?' <small class="mut">🔁 كل يوم</small>':''}${hs?` <small style="color:var(--ac2);font-weight:700">${Math.round(pv*100)}%</small>`:''}</span><button class="sm" data-a="addsub" data-id="${t.id}">＋</button><button class="sm" data-a="deltask" data-id="${t.id}">✕</button></div>${v.sub==t.id?`<div class="row"><input id="sn" placeholder="الخطوة الفرعية"><button class="pri sm" data-a="subok" data-id="${t.id}">أضف</button></div>`:''}${(t.subs||[]).map(x=>taskH(x,d,l+1)).join('')}</div>`}
+function tasksH(k){const d=D(k),L=tasksOf(k);
+let s=PER.map(([id,n])=>{const x=L.filter(t=>t.per==id);return x.length?`<div class="per">${n}</div>`+x.map(t=>taskH(t,d,0)).join(''):''}).join('')||'<p class="mut">لا مهام لهذا اليوم. أضف أول مهمة بالأسفل.</p>';
+return `<div class="box">${s}</div><div class="box"><h3>مهمة جديدة</h3><input id="nt" placeholder="عنوان المهمة"><div class="row"><select id="np">${PER.map(([i,n])=>`<option value="${i}">${n}</option>`).join('')}</select><input id="ntm" type="time"></div><div class="row"><select id="nr"><option value="once">يوم واحد فقط</option><option value="daily">كل يوم</option></select></div><input id="nn" placeholder="ملاحظة سريعة (اختياري)"><div class="row"><button class="pri" data-a="addtask">إضافة المهمة</button></div></div>`}
+function healthH(k){const h=D(k).h;
+let s=`<div class="box"><h3>🙂 مزاجي اليوم</h3><div class="row">${MOODS.map(([e,n])=>`<button style="flex:1" class="${h.mood==e?'pri':''}" data-a="mood" data-e="${e}">${e}<br><small>${n}</small></button>`).join('')}</div></div><div class="box"><h3>🍽️ التغذية</h3><div class="cnt"><button data-a="ml" data-n="-1">−</button><b>${h.meals}</b><button data-a="ml" data-n="1">＋</button><span class="mut">وجبة</span></div><label class="row"><input type="checkbox" style="width:22px;height:22px;flex:none" data-a="nut" ${h.nut?'checked':''}> وصلت لاحتياجي اليوم</label></div>
+<div class="box"><h3>🏋️ التدريب</h3><label class="row"><input type="checkbox" style="width:22px;height:22px;flex:none" data-a="tr" ${h.tr?'checked':''}> تدربت اليوم ${h.tr?'✅':''}</label><input data-f="trn" placeholder="ملاحظة عن التمرين" value="${esc(h.trn)}"></div>
+<div class="box"><h3>🎓 ماذا تعلمت اليوم؟</h3><textarea data-f="learn">${esc(h.learn)}</textarea></div>
+<div class="box"><h3>📊 مجالاتي الأساسية</h3>`;
+s+=db.areas.map(a=>{const p=+h.ar[a.id]||0;return `<div class="row">${v.edit?`<input data-f="area:${a.id}" value="${esc(a.t)}"><button class="sm" data-a="delarea" data-id="${a.id}">${v.cf==a.id?'تأكيد؟':'حذف'}</button>`:`<span style="flex:1">${esc(a.t)}</span>`}<input class="pc" type="number" min="0" max="100" data-f="ar:${a.id}" value="${p}"><span>%</span></div><div class="bar"><i style="width:${Math.min(p,100)}%"></i></div>`}).join('');
+if(v.edit)s+=`<div class="row"><input id="na" placeholder="مجال جديد"><button class="pri" data-a="addarea">إضافة</button></div>`;
+return s+'</div>'}
+
+function render(){const A=$('#app');A.innerHTML=v.p=='home'?homeH():v.p=='cal'?calH():v.p=='logs'?logsH():v.p=='stats'?statsH():dayH()}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b||b.type=='checkbox')return;const a=b.dataset.a,k=v.date,d=b.dataset;
+if(a=='nav'){v.p=d.p;if(d.p=='logs')v.q=''}
+else if(a=='open'){v.date=d.d;v.p='day';v.tab='mem';v.edit=false;v.sub=null}
+else if(a=='back'){v.p=v.p=='day'?'cal':'home'}
+else if(a=='pm'){v.m--;if(v.m<0){v.m=11;v.y--}}
+else if(a=='nm'){v.m++;if(v.m>11){v.m=0;v.y++}}
+else if(a=='tab'){v.tab=d.t}
+else if(a=='edit'){v.edit=!v.edit;v.cf=null}
+else if(a=='addsec'){const t=$('#ns').value.trim();if(!t)return;db.secs.push({id:uid(),t});save()}
+else if(a=='delsec'){if(v.cf!=d.id){v.cf=d.id}else{db.secs=db.secs.filter(x=>x.id!=d.id);v.cf=null;save()}}
+else if(a=='addarea'){const t=$('#na').value.trim();if(!t)return;db.areas.push({id:uid(),t});save()}
+else if(a=='delarea'){if(v.cf!=d.id){v.cf=d.id}else{db.areas=db.areas.filter(x=>x.id!=d.id);v.cf=null;save()}}
+else if(a=='delph'){D(k).ph.splice(+d.i,1);save()}
+else if(a=='mood'){D(k).h.mood=D(k).h.mood==d.e?'':d.e;save()}
+else if(a=='exp'){exportData();return}
+else if(a=='pin'){setPin();return}
+else if(a=='ml'){const h=D(k).h;h.meals=Math.max(0,h.meals+ +d.n);save()}
+else if(a=='addtask'){const title=$('#nt').value.trim();if(!title)return;const t={id:uid(),title,per:$('#np').value,time:$('#ntm').value,rep:$('#nr').value,note:$('#nn').value.trim(),subs:[],from:k};(t.rep=='daily'?db.daily:D(k).tasks).push(t);save()}
+else if(a=='addsub'){v.sub=v.sub==d.id?null:d.id}
+else if(a=='subok'){const t=$('#sn').value.trim();if(!t)return;const r=findT(d.id,k);if(r){const p=r[0][r[1]];(p.subs=p.subs||[]).push({id:uid(),title:t,subs:[]});save()}v.sub=null}
+else if(a=='deltask'){const r=findT(d.id,k);if(r){r[0].splice(r[1],1);save()}}
+render()});
+document.addEventListener('change',e=>{const t=e.target,k=v.date;
+if(t.id=='imp'&&t.files[0]){const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!o.days)throw 0;db=o;save();render();alert('تمت الاستعادة')}catch(x){alert('ملف غير صالح')}};r.readAsText(t.files[0]);return}
+if(t.id=='fi'&&t.files[0]){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,800/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);D(k).ph.push({src:c.toDataURL('image/jpeg',.7),d:''});save();render()};im.src=r.result};r.readAsDataURL(t.files[0]);return}
+const a=t.dataset.a;if(!a)return;
+if(a=='chk'){const r=findT(t.dataset.id,k);if(r)setAll(r[0][r[1]],D(k),t.checked)}
+else if(a=='nut')D(k).h.nut=t.checked;else if(a=='tr')D(k).h.tr=t.checked;
+save();render()});
+document.addEventListener('input',e=>{const t=e.target,f=t.dataset.f;if(!f)return;const k=v.date,[n,id]=f.split(':');
+if(n=='q'){v.q=t.value;$('#res').innerHTML=resH();return}
+if(n=='tx')D(k).tx[id]=t.value;else if(n=='phd')D(k).ph[+id].d=t.value;
+else if(n=='sec')db.secs.find(x=>x.id==id).t=t.value;else if(n=='area')db.areas.find(x=>x.id==id).t=t.value;
+else if(n=='ar'){D(k).h.ar[id]=t.value;const b=t.closest('.row').nextElementSibling.firstChild;if(b)b.style.width=Math.min(+t.value||0,100)+'%'}
+else D(k).h[n]=t.value;save()});
+const MOODS=[['😊','سعيد'],['😌','هادئ'],['💪','منجز'],['😴','متعب']];
+const _h=homeH;homeH=()=>_h()+`<button class="big" data-a="nav" data-p="stats">📊 الإحصائيات<small>التزامك ومزاجك آخر 30 يوم</small></button><div class="row" style="margin-top:12px"><button data-a="exp">📤 نسخة احتياطية</button><button onclick="$('#imp').click()">📥 استعادة</button><button data-a="pin">🔒 ${db.pin?'تغيير/إزالة القفل':'قفل التطبيق'}</button></div><input type="file" id="imp" accept=".json" style="display:none">`;
+function statsH(){const ks=[];for(let i=29;i>=0;i--){const x=new Date(now.getFullYear(),now.getMonth(),now.getDate()-i);ks.push(key(x.getFullYear(),x.getMonth(),x.getDate()))}
+const pr=ks.map(k=>prog(k)).filter(x=>x!=null),av=pr.length?Math.round(pr.reduce((a,b)=>a+b,0)/pr.length):0;
+const H=k=>db.days[k]&&db.days[k].h,tr=ks.filter(k=>H(k)&&H(k).tr).length,nu=ks.filter(k=>H(k)&&H(k).nut).length;
+const bar=(t,p)=>`<div class="row"><span style="flex:1">${t}</span><b>${p}%</b></div><div class="bar"><i style="width:${p}%"></i></div>`;
+return `<div class="top"><button data-a="back">رجوع</button><h2>آخر 30 يوم</h2></div><div class="box">${bar('متوسط إنجاز المهام',av)}${bar('أيام التدريب',Math.round(tr/30*100))}${bar('أيام بلوغ احتياج التغذية',Math.round(nu/30*100))}</div><div class="box"><h3>🙂 المزاج</h3>${MOODS.map(([e,n])=>`<div class="row"><span>${e} ${n}</span><b style="margin-inline-start:auto">${ks.filter(k=>H(k)&&H(k).mood==e).length}</b></div>`).join('')}</div><div class="box"><h3>إنجاز كل يوم</h3><div style="display:flex;gap:3px;align-items:flex-end;height:70px">${ks.map(k=>{const p=prog(k);return `<i title="${k}" style="flex:1;background:var(--ac2);opacity:${p==null?.15:.4+p/170};height:${p==null?6:Math.max(6,p*.7)}px;border-radius:2px"></i>`}).join('')}</div></div>`}
+function exportData(){const b=new Blob([JSON.stringify(db)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='yawmiyati-'+today+'.json';a.click()}
+async function sh(x){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('yw'+x));return [...new Uint8Array(b)].map(n=>n.toString(16).padStart(2,'0')).join('')}
+async function setPin(){if(db.pin){const o=prompt('أدخل الرمز الحالي');if(o===null||await sh(o)!=db.pin){alert('الرمز غير صحيح');return}const n=prompt('رمز جديد (اتركه فارغاً للإزالة)');if(n===null)return;if(!n)delete db.pin;else db.pin=await sh(n)}else{const n=prompt('اختر رمزاً (أرقام)');if(!n)return;db.pin=await sh(n)}save();render()}
+async function unlock(){if(!db.pin)return render();$('#app').innerHTML='<div style="margin-top:80px;text-align:center"><h1>🔒 يومياتي</h1><input id="pn" type="password" inputmode="numeric" placeholder="الرمز" style="text-align:center;margin:16px 0"><button class="pri" id="pb">فتح</button></div>';const go=async()=>{if(await sh($('#pn').value)==db.pin)render();else{$('#pn').value='';$('#pn').placeholder='رمز خاطئ'}};$('#pb').onclick=go;$('#pn').onkeydown=e=>{if(e.key=='Enter')go()}}
+unlock();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
